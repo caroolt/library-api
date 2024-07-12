@@ -21,14 +21,18 @@ export class AuthService {
   }
 
   async login(user: any) {
+    const userFound = await this.usersService.findOneByEmail(user.email);
+    if (!userFound) {
+      return 'User not found';
+    }
+
     const payload: JwtPayload = {
       email: user.email,
-      sub: user.id,
-      role: user.role,
+      sub: userFound._id.toString(),
+      role: userFound.role,
     };
     return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 

@@ -6,10 +6,10 @@ export class Author extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ required: true })
   bio: string;
 
-  @Prop()
+  @Prop({ required: true })
   birthdate: Date;
 }
 

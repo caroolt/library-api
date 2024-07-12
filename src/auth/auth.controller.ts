@@ -12,8 +12,8 @@ export class AuthController {
   @ApiBody({
     schema: { example: { email: 'user@example.com', password: 'password' } },
   })
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() { body }) {
+    return this.authService.login(body);
   }
 
   @Post('register')

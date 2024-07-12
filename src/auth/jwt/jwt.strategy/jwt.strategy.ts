@@ -3,11 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from '../../auth.service';
 import { JwtPayload } from '../jwt-payload.interface';
+import * as dotenv from 'dotenv';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
-
+dotenv.config();
 const JWT_TOKEN = process.env.JWT_TOKEN;
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {

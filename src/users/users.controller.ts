@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
   ApiTags,
@@ -8,9 +16,11 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { Roles } from './roles/roles.decorator';
+import { RolesGuard } from './roles/roles.guard';
 
 @ApiTags('users')
 @Controller('users')
+@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
