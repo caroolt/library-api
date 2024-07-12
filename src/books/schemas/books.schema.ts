@@ -13,7 +13,7 @@ export class Book extends Document {
   @Prop({ type: Date, required: true })
   publicationDate: Date;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Author' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: true })
   author: Author;
 }
 

@@ -9,13 +9,11 @@ export class RolesGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const roles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler());
-    if (!roles || roles.includes('admin')) {
-      const request = context.switchToHttp().getRequest();
-      const user: JwtPayload = request.user;
+    const request = context.switchToHttp().getRequest();
+    const user: JwtPayload = request.user;
 
-      if (user && user.role === 'admin') {
-        return true;
-      }
+    if (user && (user.role === 'admin' || (roles && user.role === roles[0]))) {
+      return true;
     }
     return false;
   }

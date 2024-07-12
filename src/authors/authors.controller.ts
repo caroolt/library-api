@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 
@@ -18,30 +19,36 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
+import { RolesGuard } from 'src/users/roles/roles.guard';
 
 @ApiTags('authors')
 @ApiBearerAuth()
+@UseGuards(RolesGuard)
 @Controller('authors')
 export class AuthorsController {
   constructor(private readonly authorService: AuthorsService) {}
 
   @Post()
-  @Roles('admin')
-  @ApiOperation({ summary: 'Create a new author' })
+  @ApiOperation({ summary: 'Create a new author (if Admin)' })
   @ApiBody({
     schema: {
       example: {
         name: 'Author Name',
-        biography: 'Author Biography',
-        birthDate: '1970-01-01',
+        bio: 'Author bio',
+        birthdate: '1970-01-01',
       },
     },
   })
   createAuthor(@Body() createAuthor: any) {
-    return this.authorService.createAuthor(createAuthor);
+    const author = {
+      birthdate: new Date(createAuthor.birthdate),
+      ...createAuthor,
+    };
+    return this.authorService.createAuthor(author);
   }
 
   @Get()
+  @Roles('user')
   @ApiOperation({ summary: 'Get all authors' })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({
@@ -60,6 +67,7 @@ export class AuthorsController {
   }
 
   @Get(':id')
+  @Roles('user')
   @ApiOperation({ summary: 'Get an author by ID' })
   @ApiParam({ name: 'id', description: 'Author ID' })
   findOneAuthor(@Param('id') id: string) {
@@ -67,14 +75,13 @@ export class AuthorsController {
   }
 
   @Put(':id')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Update an author by ID' })
+  @ApiOperation({ summary: 'Update an author by ID (if Admin)' })
   @ApiParam({ name: 'id', description: 'Author ID' })
   @ApiBody({
     schema: {
       example: {
         name: 'Updated Name',
-        biography: 'Updated Biography',
+        bio: 'Updated bio',
         birthDate: '1970-01-01',
       },
     },
@@ -84,8 +91,7 @@ export class AuthorsController {
   }
 
   @Delete(':id')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Delete an author by ID' })
+  @ApiOperation({ summary: 'Delete an author by ID (if Admin)' })
   @ApiParam({ name: 'id', description: 'Author ID' })
   deleteAuthor(@Param('id') id: string) {
     return this.authorService.deleteAuthor(id);

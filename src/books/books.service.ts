@@ -16,11 +16,11 @@ export class BooksService {
   }
 
   async findAllBooks(): Promise<Book[]> {
-    return this.bookModel.find();
+    return this.bookModel.find().populate('author');
   }
 
   async findOneBook(id: string): Promise<Book> {
-    return this.bookModel.findById(id);
+    return this.bookModel.findById(id).populate('author');
   }
 
   async updateBook(id: string, updateBook: any): Promise<Book> {

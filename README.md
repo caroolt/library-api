@@ -91,7 +91,7 @@ $ npm run start:prod
     {
       "title": "Updated Title",
       "description": "Updated Description",
-      "publicationDateedDate": "2023-01-01",
+      "publicationDate": "2023-01-01",
       "authorId": "authorId"
     }
     ```
@@ -104,7 +104,7 @@ $ npm run start:prod
     ```json
     {
       "name": "Author Name",
-      "biography": "Author Biography",
+      "bio": "Author bio",
       "birthDate": "1970-01-01"
     }
     ```
@@ -123,7 +123,7 @@ $ npm run start:prod
     ```json
     {
       "name": "Updated Name",
-      "biography": "Updated Biography",
+      "bio": "Updated bio",
       "birthDate": "1970-01-01"
     }
     ```

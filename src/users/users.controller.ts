@@ -20,19 +20,20 @@ import { RolesGuard } from './roles/roles.guard';
 
 @ApiTags('users')
 @Controller('users')
+@ApiBearerAuth()
 @UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @Roles('admin')
+  @Roles('user')
   @ApiOperation({ summary: 'Get all users' })
-  @ApiBearerAuth()
   findAllUsers() {
     return this.usersService.findAllUsers();
   }
 
   @Get(':id')
+  @Roles('user')
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiBearerAuth()
@@ -41,16 +42,17 @@ export class UsersController {
   }
 
   @Get('email/:email')
-  @Roles('admin')
+  @ApiBearerAuth()
+  @Roles('user')
   @ApiOperation({ summary: 'Get a user by email' })
   @ApiParam({ name: 'email', description: 'User email' })
-  @ApiBearerAuth()
   findOneByEmail(@Param('email') email: string) {
     return this.usersService.findOneByEmail(email);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update a user by ID' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a user by ID (if Admin)' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiBody({
     schema: {
@@ -61,14 +63,13 @@ export class UsersController {
       },
     },
   })
-  @ApiBearerAuth()
   updateUser(@Param('id') id: string, @Body() updateUser: any) {
     return this.usersService.updateUser(id, updateUser);
   }
 
   @Delete(':id')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete a user by ID' })
+  @ApiOperation({ summary: 'Delete a user by ID (if Admin)' })
   @ApiParam({ name: 'id', description: 'User ID' })
   deleteUser(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
