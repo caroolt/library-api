@@ -1,44 +1,28 @@
-# library_api
-API RESTful para gerenciar um sistema de biblioteca. A API permite a criação, leitura, atualização e exclusão (CRUD) de livros e autores, além de implementar um sistema de autenticação via tokens JWT com suporte a refresh tokens, permissões e roles de usuário.
+# Library API
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Descrição
+API para gerenciar um sistema de biblioteca.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Requisitos
+- Node.js
+- MongoDB
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Configuração
 
-## Description
+1. Clone o repositório
+   ```bash
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   cd seu-repositorio
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+2. Instale as Dependências
+```bash 
+  npm install
 ```
+3. Configure o arquivo `.env` seguindo o arquivo `.example.env`
 
-## Running the app
-
+4. Inicie o Servidor 
 ```bash
-# development
+  # development
 $ npm run start
 
 # watch mode
@@ -48,29 +32,100 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+5. Acesse a documentação do Swagger em `http://localhost:3000/api/docs`
 
-```bash
-# unit tests
-$ npm run test
+## Endpoints Principais
 
-# e2e tests
-$ npm run test:e2e
+### Autenticação
+- `POST /auth/login` - Login do usuário
+  - Corpo da solicitação:
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "password"
+    }
+    ```
 
-# test coverage
-$ npm run test:cov
-```
+- `POST /auth/register` - Registro de um novo usuário
+  - Corpo da solicitação:
+    ```json
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "password"
+    }
+    ```
 
-## Support
+- `POST /auth/refresh-token` - Renovação do token de acesso
+  - Corpo da solicitação:
+    ```json
+    {
+      "refresh_token": "yourRefreshToken"
+    }
+    ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Livros
+- `POST /books` - Criação de um novo livro (apenas para admins)
+  - Corpo da solicitação:
+    ```json
+    {
+      "title": "Book Title",
+      "description": "Book Description",
+      "publicationDate": "2023-01-01",
+      "authorId": "authorId"
+    }
+    ```
 
-## Stay in touch
+- `GET /books` - Listar todos os livros
+  - Parâmetros de consulta opcionais:
+    - `page`: Número da página
+    - `limit`: Limite de resultados por página
+    - `sort`: Campo para ordenação
+    - `search`: Buscar livros pelo título
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- `GET /books/:id` - Buscar um livro por ID
 
-## License
+- `PUT /books/:id` - Atualizar um livro (apenas para admins)
+  - Corpo da solicitação:
+    ```json
+    {
+      "title": "Updated Title",
+      "description": "Updated Description",
+      "publicationDateedDate": "2023-01-01",
+      "authorId": "authorId"
+    }
+    ```
 
-Nest is [MIT licensed](LICENSE).
+- `DELETE /books/:id` - Deletar um livro (apenas para admins)
+
+### Autores
+- `POST /authors` - Criação de um novo autor (apenas para admins)
+  - Corpo da solicitação:
+    ```json
+    {
+      "name": "Author Name",
+      "biography": "Author Biography",
+      "birthDate": "1970-01-01"
+    }
+    ```
+
+- `GET /authors` - Listar todos os autores
+  - Parâmetros de consulta opcionais:
+    - `page`: Número da página
+    - `limit`: Limite de resultados por página
+    - `sort`: Campo para ordenação
+    - `search`: Buscar autores pelo nome
+
+- `GET /authors/:id` - Buscar um autor por ID
+
+- `PUT /authors/:id` - Atualizar um autor (apenas para admins)
+  - Corpo da solicitação:
+    ```json
+    {
+      "name": "Updated Name",
+      "biography": "Updated Biography",
+      "birthDate": "1970-01-01"
+    }
+    ```
+
+- `DELETE /authors/:id` - Deletar um autor (apenas para admins)
