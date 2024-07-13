@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from './schemas/books.schema';
 import type { Model, SortOrder } from 'mongoose';
@@ -11,6 +11,12 @@ export class BooksService {
   ) {}
 
   async createBook(createBook: any): Promise<Book> {
+    const existingBook = await this.findBookByTitle(createBook.title);
+
+    if (existingBook) {
+      throw new BadRequestException('Book already exists');
+    }
+
     const createdBook = new this.bookModel(createBook);
     return createdBook.save();
   }
@@ -35,6 +41,9 @@ export class BooksService {
 
   async findOneBook(id: string): Promise<Book> {
     return this.bookModel.findById(id).populate('author');
+  }
+  async findBookByTitle(title: string): Promise<Book> {
+    return this.bookModel.findOne({ title }).populate('author');
   }
 
   async updateBook(id: string, updateBook: any): Promise<Book> {

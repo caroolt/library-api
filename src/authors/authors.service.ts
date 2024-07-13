@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Author } from './schemas/author.schema';
 import type { Model, SortOrder } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,6 +10,10 @@ export class AuthorsService {
   ) {}
 
   async createAuthor(createAuthor: any): Promise<Author> {
+    const existingAuthor = await this.findAuthorByName(createAuthor.name);
+    if (existingAuthor) {
+      throw new BadRequestException('Author already exists');
+    }
     const Author = new this.authorModel(createAuthor);
     return Author.save();
   }
@@ -28,8 +32,12 @@ export class AuthorsService {
     return this.authorModel.find().sort(sortOptions).skip(skip).limit(limit);
   }
 
-  async findOneAuthor(id: string): Promise<Author> {
+  async findOneAuthor(id: string): Promise<Author | null> {
     return this.authorModel.findById(id);
+  }
+
+  async findAuthorByName(name: string): Promise<Author | null> {
+    return this.authorModel.findOne({ name });
   }
 
   async updateAuthor(id: string, updateAuthor: any): Promise<Author> {

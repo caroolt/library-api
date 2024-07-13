@@ -91,6 +91,14 @@ export class AuthorsController {
     return this.authorService.findOneAuthor(id);
   }
 
+  @Get('name/:name')
+  @Roles('user')
+  @ApiOperation({ summary: 'Get an author by name' })
+  @ApiParam({ name: 'name', description: 'Author name' })
+  findAuthorByName(@Param('name') name: string) {
+    return this.authorService.findAuthorByName(name);
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Update an author by ID (if Admin)' })
   @ApiParam({ name: 'id', description: 'Author ID' })

@@ -89,6 +89,15 @@ export class BooksController {
     return this.booksService.findOneBook(id);
   }
 
+  @Get('title/:title')
+  @ApiBearerAuth()
+  @Roles('user')
+  @ApiOperation({ summary: 'Get a book by title' })
+  @ApiParam({ name: 'title', description: 'Book title' })
+  findBookByTitle(@Param('title') title: string) {
+    return this.booksService.findBookByTitle(title);
+  }
+
   @Put(':id')
   @UseGuards(RolesGuard)
   @ApiBearerAuth()

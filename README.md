@@ -6,6 +6,9 @@ API for managing a library system.
 ## Requirements
 - Node.js
 - MongoDB
+- Docker
+- Docker Compose
+
 
 ## Setup
 
@@ -13,6 +16,8 @@ API for managing a library system.
    ```bash
    git clone https://github.com/caroolt/library-api.git
    cd library-api
+
+## If you don't want to use Docker
 
 2. Install Dependencies
   ```bash
@@ -32,6 +37,16 @@ API for managing a library system.
     $ npm run start:prod
  ```
 5. Access Swagger documentation at http://localhost:3000/api/docs
+
+## If you want to use Docker
+2. Configure the `.docker-compose.yml` file following the `docker-compose.example.yml` file
+
+3. Build and Start the Docker Containers
+```bash
+  docker-compose up --build
+```
+
+4. Access Swagger documentation at http://localhost:3000/api/docs
 
 # Main Endpoints
 ## Authentication
@@ -121,10 +136,17 @@ API for managing a library system.
     - `page`: Page number
     - `limit`: Results per page limit
     - `sortDir`: Sort field
-    - `sortBy`: Search books by title or any parameter you like
+    - `sortBy`: Sort books by title or any parameter you like
 
 ### Get a Book by ID
 - **GET /books/:id**
+- Parameters:
+    - `id`: Book id
+
+### Get a book by title
+- **GET /users/title/:title**
+  - Parameters:
+    - `title`: Book title
 
 ### Update a Book (admin only)
 - **PUT /books/:id**
@@ -164,6 +186,13 @@ API for managing a library system.
 
 ### Get an Author by ID
 - **GET /authors/:id**
+- Parameters:
+    - `id`: Author id
+
+### Get a Author by name
+- **GET /authors/name/:name**
+  - Parameters:
+    - `name`: Author name
 
 ### Update an Author (admin only)
 - **PUT /authors/:id**

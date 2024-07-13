@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import type { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
@@ -10,6 +10,12 @@ export class UsersService {
   ) {}
 
   async createUser(createUser: any): Promise<User> {
+    const existingUser = await this.findOneByEmail(createUser.email);
+
+    if (existingUser) {
+      throw new BadRequestException('This email is already registered');
+    }
+
     const user = new this.userModel(createUser);
     return user.save();
   }
