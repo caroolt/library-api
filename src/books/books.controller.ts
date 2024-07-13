@@ -71,7 +71,7 @@ export class BooksController {
     required: false,
     description: 'Sort books by title or any parameter you like',
   })
-  async findAll(
+  async findAllBooks(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('sortBy') sortBy: string = 'title',
