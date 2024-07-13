@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
@@ -19,6 +22,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { RolesGuard } from 'src/users/roles/roles.guard';
+import type { Book } from './schemas/books.schema';
 
 @ApiTags('books')
 @Controller('books')
@@ -47,20 +51,33 @@ export class BooksController {
   @ApiBearerAuth()
   @Roles('user')
   @ApiOperation({ summary: 'Get all books' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number (should be greater than 0)',
+  })
   @ApiQuery({
     name: 'limit',
     required: false,
     description: 'Limit of results per page',
   })
-  @ApiQuery({ name: 'sort', required: false, description: 'Field to sort by' })
   @ApiQuery({
-    name: 'search',
+    name: 'sortDir',
     required: false,
-    description: 'Search books by title',
+    description: 'Field to sort by',
   })
-  findAllBooks() {
-    return this.booksService.findAllBooks();
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    description: 'Sort books by title or any parameter you like',
+  })
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('sortBy') sortBy: string = 'title',
+    @Query('sortDir') sortDir: 'asc' | 'desc' = 'asc',
+  ): Promise<Book[]> {
+    return this.booksService.findAllBooks(page, limit, sortBy, sortDir);
   }
 
   @Get(':id')

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Author } from './schemas/author.schema';
-import type { Model } from 'mongoose';
+import type { Model, SortOrder } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 @Injectable()
 export class AuthorsService {
@@ -14,8 +14,18 @@ export class AuthorsService {
     return Author.save();
   }
 
-  async findAllAuthors(): Promise<Author[]> {
-    return this.authorModel.find();
+  async findAllAuthors(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortDir?: 'asc' | 'desc',
+  ): Promise<Author[]> {
+    const skip = (page - 1) * limit;
+
+    const sortOptions: { [key: string]: SortOrder } = {};
+    sortOptions[sortBy] = sortDir === 'asc' ? 1 : -1;
+
+    return this.authorModel.find().sort(sortOptions).skip(skip).limit(limit);
   }
 
   async findOneAuthor(id: string): Promise<Author> {

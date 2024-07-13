@@ -1,44 +1,44 @@
 # Library API
 
-## Descrição
-API para gerenciar um sistema de biblioteca.
+## Description
+API for managing a library system.
 
-## Requisitos
+## Requirements
 - Node.js
 - MongoDB
 
-## Configuração
+## Setup
 
-1. Clone o repositório
+1. Clone the repository
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/caroolt/library-api.git
+   cd library-api
 
-2. Instale as Dependências
-```bash 
+2. Install Dependencies
+  ```bash
   npm install
-```
-3. Configure o arquivo `.env` seguindo o arquivo `.example.env`
+  ```
+3. Configure the `.env` file following the `.example.env` file
 
-4. Inicie o Servidor 
+4. Start the Server
 ```bash
-  # development
-$ npm run start
+    # development mode
+    $ npm run start
 
-# watch mode
-$ npm run start:dev
+    # watch mode
+    $ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
+    # production mode
+    $ npm run start:prod
+ ```
+5. Access Swagger documentation at http://localhost:3000/api/docs
 
-5. Acesse a documentação do Swagger em `http://localhost:3000/api/docs`
+# Main Endpoints
+## Authentication
 
-## Endpoints Principais
-
-### Autenticação
-- `POST /auth/login` - Login do usuário
-  - Corpo da solicitação:
+### User Login
+- **POST /auth/login**
+  - Request body:
     ```json
     {
       "email": "user@example.com",
@@ -46,8 +46,9 @@ $ npm run start:prod
     }
     ```
 
-- `POST /auth/register` - Registro de um novo usuário
-  - Corpo da solicitação:
+### Register a New User
+- **POST /auth/register**
+  - Request body:
     ```json
     {
       "name": "John Doe",
@@ -56,17 +57,55 @@ $ npm run start:prod
     }
     ```
 
-- `POST /auth/refresh-token` - Renovação do token de acesso
-  - Corpo da solicitação:
+### Refresh Access Token
+- **POST /auth/refresh-token**
+  - Request body:
     ```json
     {
-      "refresh_token": "yourRefreshToken"
+      "refresh_token": "yourAccessToken"
     }
     ```
 
-### Livros
-- `POST /books` - Criação de um novo livro (apenas para admins)
-  - Corpo da solicitação:
+## Users
+
+### Get all users
+- **GET /users**
+  
+
+### Get a user by ID
+- **GET /users/:id**
+  - Parameters:
+    - `id`: User ID
+
+### Get a user by email
+- **GET /users/email/:email**
+  - Parameters:
+    - `email`: User email
+
+### Update a user by ID (if Admin)
+- **PUT /users/:id**
+  - Parameters:
+    - `id`: User ID
+  - Request body:
+    ```json
+    {
+      "name": "Updated Name",
+      "email": "updated@example.com",
+      "password": "newpassword"
+    }
+    ```
+
+### Delete a user by ID (if Admin)
+- **DELETE /users/:id**
+  - Parameters:
+    - `id`: User ID
+
+
+## Books
+
+### Create a New Book (admin only)
+- **POST /books**
+  - Request body:
     ```json
     {
       "title": "Book Title",
@@ -76,17 +115,20 @@ $ npm run start:prod
     }
     ```
 
-- `GET /books` - Listar todos os livros
-  - Parâmetros de consulta opcionais:
-    - `page`: Número da página
-    - `limit`: Limite de resultados por página
-    - `sort`: Campo para ordenação
-    - `search`: Buscar livros pelo título
+### List All Books
+- **GET /books**
+  - Optional query parameters:
+    - `page`: Page number
+    - `limit`: Results per page limit
+    - `sortDir`: Sort field
+    - `sortBy`: Search books by title or any parameter you like
 
-- `GET /books/:id` - Buscar um livro por ID
+### Get a Book by ID
+- **GET /books/:id**
 
-- `PUT /books/:id` - Atualizar um livro (apenas para admins)
-  - Corpo da solicitação:
+### Update a Book (admin only)
+- **PUT /books/:id**
+  - Request body:
     ```json
     {
       "title": "Updated Title",
@@ -96,11 +138,14 @@ $ npm run start:prod
     }
     ```
 
-- `DELETE /books/:id` - Deletar um livro (apenas para admins)
+### Delete a Book (admin only)
+- **DELETE /books/:id**
 
-### Autores
-- `POST /authors` - Criação de um novo autor (apenas para admins)
-  - Corpo da solicitação:
+## Authors
+
+### Create a New Author (admin only)
+- **POST /authors**
+  - Request body:
     ```json
     {
       "name": "Author Name",
@@ -109,17 +154,20 @@ $ npm run start:prod
     }
     ```
 
-- `GET /authors` - Listar todos os autores
-  - Parâmetros de consulta opcionais:
-    - `page`: Número da página
-    - `limit`: Limite de resultados por página
-    - `sort`: Campo para ordenação
-    - `search`: Buscar autores pelo nome
+### List All Authors
+- **GET /authors**
+  - Optional query parameters:
+    - `page`: Page number
+    - `limit`: Results per page limit
+    - `sortDir`: Sort field
+    - `sortBy`: Search authors by name or any parameter you like
 
-- `GET /authors/:id` - Buscar um autor por ID
+### Get an Author by ID
+- **GET /authors/:id**
 
-- `PUT /authors/:id` - Atualizar um autor (apenas para admins)
-  - Corpo da solicitação:
+### Update an Author (admin only)
+- **PUT /authors/:id**
+  - Request body:
     ```json
     {
       "name": "Updated Name",
@@ -128,4 +176,7 @@ $ npm run start:prod
     }
     ```
 
-- `DELETE /authors/:id` - Deletar um autor (apenas para admins)
+### Delete an Author (admin only)
+- **DELETE /authors/:id**
+
+

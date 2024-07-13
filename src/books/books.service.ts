@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from './schemas/books.schema';
-import type { Model } from 'mongoose';
+import type { Model, SortOrder } from 'mongoose';
 
 @Injectable()
 export class BooksService {
@@ -15,8 +15,22 @@ export class BooksService {
     return createdBook.save();
   }
 
-  async findAllBooks(): Promise<Book[]> {
-    return this.bookModel.find().populate('author');
+  async findAllBooks(
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    sortDir?: 'asc' | 'desc',
+  ): Promise<Book[]> {
+    const skip = (page - 1) * limit;
+    const sortOptions: { [key: string]: SortOrder } = {};
+    sortOptions[sortBy] = sortDir === 'asc' ? 1 : -1;
+
+    return this.bookModel
+      .find()
+      .populate('author')
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
   }
 
   async findOneBook(id: string): Promise<Book> {

@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
@@ -20,6 +23,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { RolesGuard } from 'src/users/roles/roles.guard';
+import type { Author } from './schemas/author.schema';
 
 @ApiTags('authors')
 @ApiBearerAuth()
@@ -50,20 +54,33 @@ export class AuthorsController {
   @Get()
   @Roles('user')
   @ApiOperation({ summary: 'Get all authors' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number (should be greater than 0)',
+  })
   @ApiQuery({
     name: 'limit',
     required: false,
     description: 'Limit of results per page',
   })
-  @ApiQuery({ name: 'sort', required: false, description: 'Field to sort by' })
   @ApiQuery({
-    name: 'search',
+    name: 'sortDir',
     required: false,
-    description: 'Search authors by name',
+    description: 'Field to sort by',
   })
-  findAllAuthors() {
-    return this.authorService.findAllAuthors();
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    description: 'Sort authors by name or any parameter you like',
+  })
+  findAllAuthors(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('sortBy') sortBy: string = 'name',
+    @Query('sortDir') sortDir: 'asc' | 'desc' = 'asc',
+  ): Promise<Author[]> {
+    return this.authorService.findAllAuthors(page, limit, sortBy, sortDir);
   }
 
   @Get(':id')
