@@ -4,7 +4,7 @@
 API for managing a library system.
 
 ## Requirements
-- Node.js
+- Node.js: LTS
 - MongoDB
 - Docker
 - Docker Compose
